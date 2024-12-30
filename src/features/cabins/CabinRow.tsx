@@ -12,6 +12,19 @@ const TableRow = styled.div`
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-grey-100);
   }
+
+  @media screen and (max-width: 730px) {
+    /* column-gap: 0; */
+    /* padding: 0; */
+    font-size: 1.2rem;
+    grid-template-columns: 0.6fr 0.6fr 1fr 1fr 1fr 1fr;
+  }
+
+  @media screen and (max-width: 550px) {
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    padding: 1.2rem 1.2rem;
+    gap: 1.2rem;
+  }
 `;
 
 const Img = styled.img`
@@ -28,6 +41,16 @@ const Cabin = styled.div`
   font-weight: 600;
   color: var(--color-grey-600);
   font-family: "Sono";
+
+  @media screen and (max-width: 730px) {
+    font-size: 1.2rem;
+  }
+`;
+
+const Capacity = styled.div`
+  @media screen and (max-width: 550px) {
+    display: none;
+  }
 `;
 
 const Price = styled.div`
@@ -51,7 +74,7 @@ function CabinRow({ cabin }: CabinRowPropsType) {
     <TableRow role="row">
       <Img src={image} alt={`cabin ${name}`} />
       <Cabin>{name}</Cabin>
-      <div>Fits up to {maxCapacity}</div>
+      <Capacity>Fits up to {maxCapacity}</Capacity>
       <Price>{formatCurrency(regularPrice)}</Price>
       <Discount>{formatCurrency(discount)}</Discount>
       <button>delete</button>

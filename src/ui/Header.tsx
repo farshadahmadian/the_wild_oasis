@@ -7,7 +7,7 @@ const StyledHeader = styled.header`
 `;
 
 const HeaderLogo = styled.img`
-  width: 4.2rem;
+  width: 7rem;
   height: auto;
   display: none;
 

@@ -31,9 +31,15 @@ const StyledNavLink = styled(NavLink)`
     font-weight: 500;
     padding: 1.2rem 2.4rem;
     transition: all 0.3s;
-    @media screen and (max-width: 980px) {
-      /* font-size: 1.2rem;
-      padding: 0.6rem 1.2rem; */
+    @media screen and (max-width: 730px) {
+      font-size: 1.2rem;
+      padding: 0.6rem 1.2rem;
+    }
+
+    @media screen and (max-width: 550px) {
+      padding: 0.6rem 0.6rem;
+      /* font-size: 1rem; */
+      gap: 0.2rem;
     }
   }
 
@@ -52,9 +58,9 @@ const StyledNavLink = styled(NavLink)`
     height: 2.4rem;
     color: var(--color-grey-400);
     transition: all 0.3s;
-    @media screen and (max-width: 980px) {
-      /* width: 1.2rem;
-      height: 1.2rem; */
+    @media screen and (max-width: 730px) {
+      width: 1.2rem;
+      height: 1.2rem;
     }
   }
 

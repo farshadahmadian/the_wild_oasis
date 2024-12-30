@@ -11,6 +11,10 @@ const Table = styled.div`
   background-color: var(--color-grey-0);
   border-radius: 7px;
   overflow: hidden;
+
+  @media screen and (max-width: 730px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const TableHeader = styled.header`
@@ -26,6 +30,25 @@ const TableHeader = styled.header`
   font-weight: 600;
   color: var(--color-grey-600);
   padding: 1.6rem 2.4rem;
+
+  @media screen and (max-width: 730px) {
+    /* column-gap: 0; */
+    /* padding: 0; */
+    font-size: 1.2rem;
+    grid-template-columns: 0.6fr 0.6fr 1fr 1fr 1fr 1fr;
+  }
+
+  @media screen and (max-width: 550px) {
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    padding: 1.2rem 1.2rem;
+    gap: 1.2rem;
+  }
+`;
+
+const Capacity = styled.div`
+  @media screen and (max-width: 550px) {
+    display: none;
+  }
 `;
 
 function CabinTable() {
@@ -47,7 +70,7 @@ function CabinTable() {
       <TableHeader role="row">
         <div></div>
         <div>Cabin</div>
-        <div>Capacity</div>
+        <Capacity>Capacity</Capacity>
         <div>Price</div>
         <div>Discount</div>
         <div></div>
