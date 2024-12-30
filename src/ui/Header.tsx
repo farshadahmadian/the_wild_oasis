@@ -6,8 +6,22 @@ const StyledHeader = styled.header`
   border-bottom: 1px solid var(--color-grey-100);
 `;
 
+const HeaderLogo = styled.img`
+  width: 4.2rem;
+  height: auto;
+  display: none;
+
+  @media screen and (max-width: 980px) {
+    display: block;
+  }
+`;
+
 function Header() {
-  return <StyledHeader>header</StyledHeader>;
+  return (
+    <StyledHeader>
+      <HeaderLogo src="/logo-light.png" alt="logo" />
+    </StyledHeader>
+  );
 }
 
 export default Header;

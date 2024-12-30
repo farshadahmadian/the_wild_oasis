@@ -12,6 +12,15 @@ const StyledSidebar = styled.aside`
   display: flex;
   flex-direction: column;
   gap: 3.2rem;
+
+  @media screen and (max-width: 980px) {
+    grid-row: 2;
+    justify-self: center;
+    flex-direction: row;
+    padding: 1rem;
+    gap: 0;
+    border-right: 0;
+  }
 `;
 
 function Sidebar() {
