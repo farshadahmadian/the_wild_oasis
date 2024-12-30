@@ -40,6 +40,8 @@ function CabinTable() {
 
   if (isPending) return <Spinner />;
 
+  if (error) return null;
+
   return (
     <Table role="table">
       <TableHeader role="row">
