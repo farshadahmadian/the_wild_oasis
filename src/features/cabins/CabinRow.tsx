@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { CabinType } from "./types";
+import { formatCurrency } from "../../utils/helpers";
 
 const TableRow = styled.div`
   display: grid;
@@ -38,3 +40,23 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
+
+type CabinRowPropsType = {
+  cabin: CabinType;
+};
+
+function CabinRow({ cabin }: CabinRowPropsType) {
+  const { name, maxCapacity, regularPrice, discount, image } = cabin;
+  return (
+    <TableRow role="row">
+      <Img src={image} alt={`cabin ${name}`} />
+      <Cabin>{name}</Cabin>
+      <div>Fits up to {maxCapacity}</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      <Discount>{formatCurrency(discount)}</Discount>
+      <button>delete</button>
+    </TableRow>
+  );
+}
+
+export default CabinRow;

@@ -1,5 +1,6 @@
 export type CabinType = {
   id: number;
+  name: string;
   createdAt: string;
   maxCapacity: number;
   regularPrice: number;
