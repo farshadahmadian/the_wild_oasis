@@ -15,8 +15,11 @@ const NavList = styled.ul`
 
   @media screen and (max-width: 980px) {
     flex-direction: row;
-    gap: 0;
   }
+
+  /* @media screen and (max-width: 980px) {
+    flex-direction: row;
+  } */
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -31,15 +34,31 @@ const StyledNavLink = styled(NavLink)`
     font-weight: 500;
     padding: 1.2rem 2.4rem;
     transition: all 0.3s;
-    @media screen and (max-width: 730px) {
-      font-size: 1.2rem;
+    @media screen and (max-width: 980px) {
+      gap: 0.4rem;
+    }
+    @media screen and (max-width: 700px) {
+      /* font-size: 1.2rem; */
       padding: 0.6rem 1.2rem;
     }
 
-    @media screen and (max-width: 550px) {
+    @media screen and (max-width: 600px) {
       padding: 0.6rem 0.6rem;
+      font-size: 1.2rem;
+      /* gap: 0.2rem; */
+    }
+
+    @media screen and (max-width: 450px) {
+      padding: 0.3rem 0.3rem;
+      font-size: 1rem;
+      /* gap: 0.2rem; */
+    }
+
+    @media screen and (max-width: 380px) {
       /* font-size: 1rem; */
-      gap: 0.2rem;
+      /* gap: 0.2rem; */
+      /* padding: 0; */
+      font-size: 0.8rem;
     }
   }
 
@@ -54,14 +73,15 @@ const StyledNavLink = styled(NavLink)`
   }
 
   & svg {
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 1.8rem;
+    height: 1.8rem;
     color: var(--color-grey-400);
     transition: all 0.3s;
-    @media screen and (max-width: 730px) {
+
+    /* @media screen and (max-width: 730px) {
       width: 1.2rem;
       height: 1.2rem;
-    }
+    } */
   }
 
   &:hover svg,

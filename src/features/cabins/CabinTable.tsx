@@ -12,16 +12,17 @@ const Table = styled.div`
   border-radius: 7px;
   overflow: hidden;
 
-  @media screen and (max-width: 730px) {
+  /* @media screen and (max-width: 730px) {
     font-size: 1.2rem;
-  }
+  } */
 `;
 
 const TableHeader = styled.header`
   display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr;
   column-gap: 2.4rem;
   align-items: center;
+  text-align: center;
 
   background-color: var(--color-grey-50);
   border-bottom: 1px solid var(--color-grey-100);
@@ -34,21 +35,22 @@ const TableHeader = styled.header`
   @media screen and (max-width: 730px) {
     /* column-gap: 0; */
     /* padding: 0; */
-    font-size: 1.2rem;
-    grid-template-columns: 0.6fr 0.6fr 1fr 1fr 1fr 1fr;
+    /* font-size: 1.2rem;
+    grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr; */
   }
 
   @media screen and (max-width: 550px) {
-    grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr 0.5fr;
+    /* grid-template-columns: 1fr 0.6fr 1fr 1fr 1fr 1fr; */
     padding: 1.2rem 1.2rem;
+    font-size: 1.2rem;
     gap: 1.2rem;
   }
 `;
 
 const Capacity = styled.div`
-  @media screen and (max-width: 550px) {
+  /* @media screen and (max-width: 550px) {
     display: none;
-  }
+  } */
 `;
 
 function CabinTable() {
