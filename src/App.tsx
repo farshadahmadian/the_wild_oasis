@@ -52,9 +52,9 @@ function App() {
           success: { duration: 3000 },
           error: { duration: 5000 },
           style: {
-            fontSize: "16px",
+            fontSize: "1.4rem",
             maxWidth: "500px",
-            padding: "16px 24px",
+            padding: "8px 12px",
             backgroundColor: "var(--color-grey-700)",
             color: "var(--color-grey-100)",
           },
