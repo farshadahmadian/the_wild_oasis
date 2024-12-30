@@ -1,10 +1,13 @@
 import styled from "styled-components";
 import { CabinType } from "./types";
 import { formatCurrency } from "../../utils/helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCabin } from "../../services/apiCabins";
+import { QUERY_KEYS } from "../../types";
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 0.6fr 1fr 1fr 1fr 1fr;
   column-gap: 2.4rem;
   align-items: center;
   text-align: center;
@@ -14,18 +17,18 @@ const TableRow = styled.div`
     border-bottom: 1px solid var(--color-grey-100);
   }
 
-  @media screen and (max-width: 730px) {
-    /* column-gap: 0; */
-    /* padding: 0; */
-    /* font-size: 1.2rem;
-    grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr; */
+  @media screen and (max-width: 700px) {
+    grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr;
   }
 
   @media screen and (max-width: 550px) {
-    /* grid-template-columns: 1fr 0.6fr 1fr 1fr 1fr 1fr; */
     padding: 1.2rem 1.2rem;
     font-size: 1.2rem;
     gap: 1.2rem;
+  }
+
+  @media screen and (max-width: 420px) {
+    font-size: 1rem;
   }
 `;
 
@@ -51,9 +54,9 @@ const Cabin = styled.div`
 `;
 
 const Capacity = styled.div`
-  /* @media screen and (max-width: 550px) {
+  @media screen and (max-width: 700px) {
     display: none;
-  } */
+  }
 `;
 
 const Price = styled.div`
@@ -72,7 +75,33 @@ type CabinRowPropsType = {
 };
 
 function CabinRow({ cabin }: CabinRowPropsType) {
-  const { name, maxCapacity, regularPrice, discount, image } = cabin;
+  const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
+  const queryClient = useQueryClient();
+  const { isPending, mutate } = useMutation({
+    // mutationFn: (id: number) => deleteCabin(id),
+    mutationFn: deleteCabin,
+
+    // the callback function to be called if the delete query was successful
+    onSuccess: () => {
+      /*
+        react query will refetch the data when a data (queryKey) in cache is invalid.
+        without using invalidateQueries(), after clicking on the "delete" button,
+        react query will not refetch the data, until the browser tab changes.
+        invalidateQueries() makes react query to refetch the data without changing
+        the tab (the same as the "invalidate" button in react query extension does)
+      */
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CABINS],
+      });
+      alert("Cabin successfully deleted");
+    },
+    onError: error => alert(error.message),
+  });
+
+  function handleDeleteRow(id: number) {
+    mutate(id);
+  }
+
   return (
     <TableRow role="row">
       <Img src={image} alt={`cabin ${name}`} />
@@ -80,7 +109,9 @@ function CabinRow({ cabin }: CabinRowPropsType) {
       <Capacity>{maxCapacity}</Capacity>
       <Price>{formatCurrency(regularPrice)}</Price>
       <Discount>{formatCurrency(discount)}</Discount>
-      <button>delete</button>
+      <button disabled={isPending} onClick={handleDeleteRow.bind(null, id)}>
+        delete
+      </button>
     </TableRow>
   );
 }

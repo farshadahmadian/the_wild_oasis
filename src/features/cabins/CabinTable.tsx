@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getCabins } from "../../services/apiCabins";
 import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow";
+import { QUERY_KEYS } from "../../types";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -19,7 +20,7 @@ const Table = styled.div`
 
 const TableHeader = styled.header`
   display: grid;
-  grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 0.6fr 1fr 1fr 1fr 1fr;
   column-gap: 2.4rem;
   align-items: center;
   text-align: center;
@@ -32,18 +33,18 @@ const TableHeader = styled.header`
   color: var(--color-grey-600);
   padding: 1.6rem 2.4rem;
 
-  @media screen and (max-width: 730px) {
-    /* column-gap: 0; */
-    /* padding: 0; */
-    /* font-size: 1.2rem;
-    grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr 1fr; */
+  @media screen and (max-width: 700px) {
+    grid-template-columns: 2fr 0.6fr 1fr 1fr 1fr;
   }
 
   @media screen and (max-width: 550px) {
-    /* grid-template-columns: 1fr 0.6fr 1fr 1fr 1fr 1fr; */
     padding: 1.2rem 1.2rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     gap: 1.2rem;
+  }
+
+  @media screen and (max-width: 420px) {
+    font-size: 0.8rem;
   }
 `;
 
@@ -59,7 +60,7 @@ function CabinTable() {
     data: cabins,
     error,
   } = useQuery({
-    queryKey: ["cabins"],
+    queryKey: [QUERY_KEYS.CABINS],
     queryFn: getCabins,
   });
 

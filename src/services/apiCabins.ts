@@ -17,3 +17,12 @@ export async function getCabins() {
 
   return cabins;
 }
+
+export async function deleteCabin(id: number) {
+  const { error } = await supabase.from("cabins").delete().eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error(error.message);
+  }
+}
