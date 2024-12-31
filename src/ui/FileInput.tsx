@@ -20,6 +20,11 @@ const FileInput = styled.input`
       background-color: var(--color-brand-700);
     }
   }
+
+  @media screen and (max-width: 1350px) {
+    width: 100%;
+    max-width: 40rem;
+  }
 `;
 
 export default FileInput;

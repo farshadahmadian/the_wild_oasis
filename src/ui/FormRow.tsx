@@ -26,6 +26,28 @@ export const StyledFormRow = styled.div`
     justify-content: flex-end;
     gap: 1.2rem;
   }
+
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: 12rem 1fr;
+    grid-template-rows: 1fr auto;
+    row-gap: 1rem;
+  }
+
+  @media screen and (max-width: 980px) {
+    grid-template-columns: 12rem 1fr 1.2fr;
+  }
+
+  @media screen and (max-width: 750px) {
+    grid-template-columns: 12rem 1fr;
+    grid-template-rows: 1fr auto;
+    row-gap: 1rem;
+  }
+
+  @media screen and (max-width: 500px) {
+    grid-template-columns: 10rem 1fr;
+    font-size: 1.2rem;
+    column-gap: 1.2rem;
+  }
 `;
 
 const Label = styled.label`
@@ -35,6 +57,21 @@ const Label = styled.label`
 const StyledError = styled.span`
   font-size: 1.4rem;
   color: var(--color-red-700);
+
+  @media screen and (max-width: 1350px) {
+    grid-column: 2;
+    align-self: start;
+  }
+
+  @media screen and (max-width: 980px) {
+    grid-column: 3;
+    align-self: center;
+  }
+
+  @media screen and (max-width: 750px) {
+    grid-column: 2;
+    align-self: start;
+  }
 `;
 
 type ErrorPropsType = {
@@ -44,7 +81,6 @@ type ErrorPropsType = {
 };
 
 function Error({ errors, label }: ErrorPropsType) {
-  console.log(errors);
   if (!errors || !Object.keys(errors).length || !errors?.[label]) {
     return null;
   }

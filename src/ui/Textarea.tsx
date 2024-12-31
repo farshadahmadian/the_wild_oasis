@@ -8,6 +8,11 @@ const Textarea = styled.textarea`
   box-shadow: var(--shadow-sm);
   width: 100%;
   height: 8rem;
+
+  @media screen and (max-width: 1350px) {
+    width: 100%;
+    max-width: 40rem;
+  }
 `;
 
 export default Textarea;

@@ -78,7 +78,7 @@ function CreateCabinForm() {
         />
       </FormRow>
 
-      <FormRow label="Maximum capacity" errors={errors}>
+      <FormRow label="Max. capacity" errors={errors}>
         <Input
           disabled={isPending}
           type="number"
@@ -130,7 +130,7 @@ function CreateCabinForm() {
           })}
         />
       </FormRow>
-      <FormRow label="Description for website" errors={errors}>
+      <FormRow label="Description" errors={errors}>
         <Textarea
           disabled={isPending}
           id="description"

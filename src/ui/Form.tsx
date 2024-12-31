@@ -22,8 +22,12 @@ const Form = styled.form<FormType>`
       width: 80rem;
     `}
     
-  overflow: hidden;
+  /* overflow: hidden; */
   font-size: 1.4rem;
+
+  @media screen and (max-width: 500px) {
+    padding: 2.4rem 1.2rem;
+  }
 `;
 
 Form.defaultProps = {
