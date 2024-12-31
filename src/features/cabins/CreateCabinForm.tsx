@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import { FieldErrors, FieldValue, useForm } from "react-hook-form";
+import { FieldValue, useForm } from "react-hook-form";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -12,61 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "../../types";
 import { formatCurrency } from "../../utils/helpers";
-
-const FormRow = styled.div`
-  display: grid;
-  align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
-  gap: 2.4rem;
-
-  padding: 1.2rem 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-
-  &:has(button) {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1.2rem;
-  }
-`;
-
-const Label = styled.label`
-  font-weight: 500;
-`;
-
-const StyledError = styled.span`
-  font-size: 1.4rem;
-  color: var(--color-red-700);
-`;
-
-type ErrorPropsType = {
-  // errors: { [key: string]: { message: string } };
-  errors: FieldErrors;
-  label: string;
-};
-
-function Error({ errors, label }: ErrorPropsType) {
-  if (!errors || !Object.keys(errors).length || !errors?.[label]) {
-    return null;
-  }
-
-  return errors?.[label]?.message &&
-    typeof errors[label].message === "string" ? (
-    <StyledError>{errors[label]?.message}</StyledError>
-  ) : (
-    <StyledError>Invalid input</StyledError>
-  );
-}
+import FormRow, { StyledFormRow } from "../../ui/FormRow";
 
 function CreateCabinForm() {
   const {
@@ -122,21 +67,20 @@ function CreateCabinForm() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onValidationErrors)}>
-      <FormRow>
-        <Label htmlFor="name">Cabin name</Label>
+      <FormRow label="Cabin name" errors={errors}>
         <Input
           type="text"
           id="name"
           {...register("name", {
             required: "This field is required",
           })}
+          disabled={isPending}
         />
-        <Error errors={errors} label="name" />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="maxCapacity">Maximum capacity</Label>
+      <FormRow label="Maximum capacity" errors={errors}>
         <Input
+          disabled={isPending}
           type="number"
           id="maxCapacity"
           {...register("maxCapacity", {
@@ -147,12 +91,11 @@ function CreateCabinForm() {
             },
           })}
         />
-        <Error errors={errors} label="maxCapacity" />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="regularPrice">Regular price</Label>
+      <FormRow label="Regular price" errors={errors}>
         <Input
+          disabled={isPending}
           type="number"
           id="regularPrice"
           {...register("regularPrice", {
@@ -163,12 +106,11 @@ function CreateCabinForm() {
             },
           })}
         />
-        <Error errors={errors} label="regularPrice" />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="discount">Discount</Label>
+      <FormRow label="Discount" errors={errors}>
         <Input
+          disabled={isPending}
           type="number"
           id="discount"
           defaultValue={0}
@@ -187,33 +129,29 @@ function CreateCabinForm() {
             validate: validateDiscountField,
           })}
         />
-        <Error errors={errors} label="discount" />
       </FormRow>
-
-      <FormRow>
-        <Label htmlFor="description">Description for website</Label>
+      <FormRow label="Description for website" errors={errors}>
         <Textarea
+          disabled={isPending}
           id="description"
           defaultValue=""
           {...register("description", {
             required: "This field is required",
           })}
         />
-        <Error errors={errors} label="description" />
       </FormRow>
 
-      <FormRow>
-        <Label htmlFor="image">Cabin photo</Label>
+      <FormRow label="Cabin photo" errors={errors}>
         <FileInput id="image" accept="image/*" />
       </FormRow>
 
-      <FormRow>
+      <StyledFormRow>
         {/* type is an HTML attribute! */}
         <Button $variation="secondary" type="reset">
           Cancel
         </Button>
         <Button disabled={isPending}>Add cabin</Button>
-      </FormRow>
+      </StyledFormRow>
     </Form>
   );
 }
