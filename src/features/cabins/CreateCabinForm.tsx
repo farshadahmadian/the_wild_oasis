@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FieldValue, useForm } from "react-hook-form";
+import { FieldErrors, FieldValue, useForm } from "react-hook-form";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -11,6 +11,7 @@ import { CabinType } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "../../types";
+import { formatCurrency } from "../../utils/helpers";
 
 const FormRow = styled.div`
   display: grid;
@@ -43,15 +44,39 @@ const Label = styled.label`
   font-weight: 500;
 `;
 
-const Error = styled.span`
+const StyledError = styled.span`
   font-size: 1.4rem;
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm() {
-  const { register, handleSubmit, reset } = useForm();
-  const queryClient = useQueryClient();
+type ErrorPropsType = {
+  // errors: { [key: string]: { message: string } };
+  errors: FieldErrors;
+  label: string;
+};
 
+function Error({ errors, label }: ErrorPropsType) {
+  if (!errors || !Object.keys(errors).length || !errors?.[label]) {
+    return null;
+  }
+
+  return errors?.[label]?.message &&
+    typeof errors[label].message === "string" ? (
+    <StyledError>{errors[label]?.message}</StyledError>
+  ) : (
+    <StyledError>Invalid input</StyledError>
+  );
+}
+
+function CreateCabinForm() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm();
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: CreateCabin,
 
@@ -72,21 +97,73 @@ function CreateCabinForm() {
     mutate(data);
   }
 
+  // console.log(errors);
+
+  function onValidationErrors(errors: object) {
+    // console.log(errors);
+    void errors;
+  }
+
+  function validateDiscountField(discount: string) {
+    const discountNum = Number(discount);
+    const regularPriceNum = Number(getValues().regularPrice);
+
+    if (regularPriceNum < 0 && discountNum >= 0) return true;
+
+    return (
+      (discountNum >= 0 && discountNum <= regularPriceNum) ||
+      (discountNum < 0
+        ? `Discount cannot be negative`
+        : `Discount cannot be more than the regular price (${formatCurrency(
+            getValues().regularPrice
+          )})`)
+    );
+  }
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(onSubmit, onValidationErrors)}>
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" {...register("name")} />
+        <Input
+          type="text"
+          id="name"
+          {...register("name", {
+            required: "This field is required",
+          })}
+        />
+        <Error errors={errors} label="name" />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="maxCapacity">Maximum capacity</Label>
-        <Input type="number" id="maxCapacity" {...register("maxCapacity")} />
+        <Input
+          type="number"
+          id="maxCapacity"
+          {...register("maxCapacity", {
+            required: "This field is required",
+            min: {
+              value: 1,
+              message: "Minimum value is 1",
+            },
+          })}
+        />
+        <Error errors={errors} label="maxCapacity" />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="regularPrice">Regular price</Label>
-        <Input type="number" id="regularPrice" {...register("regularPrice")} />
+        <Input
+          type="number"
+          id="regularPrice"
+          {...register("regularPrice", {
+            required: "This field is required",
+            min: {
+              value: 1,
+              message: "Minimum value is 1",
+            },
+          })}
+        />
+        <Error errors={errors} label="regularPrice" />
       </FormRow>
 
       <FormRow>
@@ -95,8 +172,22 @@ function CreateCabinForm() {
           type="number"
           id="discount"
           defaultValue={0}
-          {...register("discount")}
+          {...register("discount", {
+            required: "This field is required",
+            min: {
+              value: 0,
+              message: "Minimum value is 0",
+            },
+            // max: {
+            //   value: getValues().regularPrice,
+            //   message: `Discount cannot be more than the regular price (${formatCurrency(
+            //     getValues().regularPrice
+            //   )})`,
+            // },
+            validate: validateDiscountField,
+          })}
         />
+        <Error errors={errors} label="discount" />
       </FormRow>
 
       <FormRow>
@@ -104,8 +195,11 @@ function CreateCabinForm() {
         <Textarea
           id="description"
           defaultValue=""
-          {...register("description")}
+          {...register("description", {
+            required: "This field is required",
+          })}
         />
+        <Error errors={errors} label="description" />
       </FormRow>
 
       <FormRow>

@@ -19,6 +19,7 @@ const HeaderLogo = styled.img`
 function Header() {
   return (
     <StyledHeader>
+      Header
       <HeaderLogo src="/logo-light.png" alt="logo" />
     </StyledHeader>
   );
