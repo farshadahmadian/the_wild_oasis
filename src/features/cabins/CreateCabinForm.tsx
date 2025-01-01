@@ -1,4 +1,4 @@
-import { FieldValue, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -6,7 +6,6 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { CreateCabin } from "../../services/apiCabins";
-import { CabinType } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "../../types";
@@ -38,7 +37,7 @@ function CreateCabinForm() {
     },
   });
 
-  function onSubmit(data: FieldValue<CabinType>) {
+  function onSubmit(data: FieldValues) {
     mutate(data);
   }
 
@@ -142,7 +141,13 @@ function CreateCabinForm() {
       </FormRow>
 
       <FormRow label="Cabin photo" errors={errors}>
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register("image", {
+            required: "This field is required",
+          })}
+        />
       </FormRow>
 
       <StyledFormRow>
