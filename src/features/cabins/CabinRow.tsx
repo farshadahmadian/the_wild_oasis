@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
 import { QUERY_KEYS } from "../../types";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import CreateCabinForm from "./CreateCabinForm";
 
 const TableRow = styled.div`
   display: grid;
@@ -76,9 +78,10 @@ type CabinRowPropsType = {
 };
 
 function CabinRow({ cabin }: CabinRowPropsType) {
+  const [showEditForm, setShowEditForm] = useState(false);
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
   const queryClient = useQueryClient();
-  const { isPending, mutate } = useMutation({
+  const { isPending: isDeleting, mutate } = useMutation({
     // mutationFn: (id: number) => deleteCabin(id),
     mutationFn: deleteCabin,
 
@@ -106,17 +109,30 @@ function CabinRow({ cabin }: CabinRowPropsType) {
     mutate(id);
   }
 
+  function handleEditRow() {
+    setShowEditForm(prevState => !prevState);
+  }
+
   return (
-    <TableRow role="row">
-      <Img src={image} alt={`cabin ${name}`} />
-      <Cabin>{name}</Cabin>
-      <Capacity>{maxCapacity}</Capacity>
-      <Price>{formatCurrency(regularPrice)}</Price>
-      <Discount>{formatCurrency(discount)}</Discount>
-      <button disabled={isPending} onClick={handleDeleteRow.bind(null, id)}>
-        delete
-      </button>
-    </TableRow>
+    <>
+      <TableRow role="row">
+        <Img src={image} alt={`cabin ${name}`} />
+        <Cabin>{name}</Cabin>
+        <Capacity>{maxCapacity}</Capacity>
+        <Price>{formatCurrency(regularPrice)}</Price>
+        <Discount>{formatCurrency(discount)}</Discount>
+        <div>
+          <button onClick={handleEditRow}>Edit</button>
+          <button
+            disabled={isDeleting}
+            onClick={handleDeleteRow.bind(null, id)}
+          >
+            delete
+          </button>
+        </div>
+      </TableRow>
+      {showEditForm && <CreateCabinForm cabinToEdit={cabin} />}
+    </>
   );
 }
 

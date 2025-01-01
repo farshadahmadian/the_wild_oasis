@@ -1,7 +1,8 @@
 import { PostgrestError } from "@supabase/supabase-js";
-import supabase, { supabaseUrl } from "./supabase";
+import supabase from "./supabase";
 import { CabinType } from "../features/cabins/types";
 import { FieldValues } from "react-hook-form";
+import { getImageProps, uploadCabinImage } from "../features/cabins/helpers";
 // import { FieldValue } from "react-hook-form";
 
 export async function getCabins() {
@@ -42,15 +43,10 @@ export type CabinFormType = {
 
 // export async function CreateCabin(newCabin: FieldValue<CabinType>) {
 export async function CreateCabin(newCabin: FieldValues) {
-  const imageFile = newCabin.image["0"];
-  const imageFileName = (
-    Math.random().toString(16).slice(2) +
-    Date.now().toString(16) +
-    imageFile.name
-  ).replace("/", "");
-
-  const cabinImagesBucket = "storage/v1/object/public/cabin-images";
-  const imagePath = `${supabaseUrl}/${cabinImagesBucket}/${imageFileName}`;
+  const { imageFile, imageFileName, imagePath } = getImageProps(
+    newCabin,
+    true
+  )!;
 
   const cabinToAdd = {
     ...newCabin,
@@ -61,22 +57,59 @@ export async function CreateCabin(newCabin: FieldValues) {
   const { data, error } = await supabase
     .from("cabins")
     .insert([cabinToAdd])
-    .select();
+    .select(); // without select() the value of "data" will be null even in case of success and using "await"
 
   if (error) {
     console.error(error);
     throw new Error("Cabin could not be created");
   }
 
-  const { error: imageError } = await supabase.storage
-    .from("cabin-images")
-    .upload(imageFileName, imageFile);
-
-  if (imageError) {
-    console.error("Cabin image could not be uploaded");
-    const deleteError = await deleteCabin(data["id" as keyof typeof data]);
-    if (!deleteError) console.error("Cabin could not be created");
-    throw new Error(imageError.message);
-  }
+  /* 
+    must "await", otherwise, before the image is uploaded, the data is returned.
+    first, image upload might encounters some errors. Second, even if it does not
+    fail, first onSuccess() in useMutation() will be called which will call invalidateQueries()
+    which leads to re-render and after that the image will be successfully uploaded, so 
+    after re-render and repainting the page, image is not painted until the next render
+    (or manul page reload)
+  */
+  await uploadCabinImage(imageFileName, imageFile, data);
   return data;
+}
+
+// data: data submitted in the edit cabin form
+export async function editCabin(obj: {
+  data: FieldValues;
+  id: number;
+  cabinToEdit: CabinType;
+}) {
+  const isImageEdited =
+    typeof obj.data.image !== "string" &&
+    obj.data?.image?.length > 0 &&
+    Object.keys(obj.data?.image).length > 0;
+
+  const imageProps = getImageProps(obj.data, isImageEdited);
+  const { imageFile, imageFileName, imagePath } = imageProps || {};
+
+  const { data, error } = await supabase
+    .from("cabins")
+    .update({
+      ...obj.data,
+      /* 
+        "obj.data.image" does not work because if the "choose file" button
+        in edit cabin form is clicked, but no file is selected, after submitting 
+        the form, obj.data.image will be an {} or A FileList with length 0
+        therefore, the image path of the remote state must be used
+      */
+      // image: isImageEdited ? imagePath : obj.data.image,
+      image: isImageEdited ? imagePath : obj.cabinToEdit.image,
+    })
+    .eq("id", obj.id)
+    .select();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Cabin could not be edited");
+  }
+
+  if (isImageEdited) await uploadCabinImage(imageFileName!, imageFile, data);
 }
