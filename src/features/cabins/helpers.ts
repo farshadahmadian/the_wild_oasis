@@ -2,6 +2,14 @@ import { FieldValues } from "react-hook-form";
 import supabase, { supabaseUrl } from "../../services/supabase";
 import { deleteCabin } from "../../services/apiCabins";
 
+export function isNewImage(cabin: FieldValues) {
+  return (
+    typeof cabin.image !== "string" &&
+    cabin?.image?.length > 0 &&
+    Object.keys(cabin?.image).length > 0
+  );
+}
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export type ImagePropsType = {
   imageFile: any;

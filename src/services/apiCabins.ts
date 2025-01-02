@@ -2,7 +2,11 @@ import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "./supabase";
 import { CabinType } from "../features/cabins/types";
 import { FieldValues } from "react-hook-form";
-import { getImageProps, uploadCabinImage } from "../features/cabins/helpers";
+import {
+  getImageProps,
+  isNewImage,
+  uploadCabinImage,
+} from "../features/cabins/helpers";
 // import { FieldValue } from "react-hook-form";
 
 export async function getCabins() {
@@ -43,15 +47,14 @@ export type CabinFormType = {
 
 // export async function CreateCabin(newCabin: FieldValue<CabinType>) {
 export async function CreateCabin(newCabin: FieldValues) {
-  const { imageFile, imageFileName, imagePath } = getImageProps(
-    newCabin,
-    true
-  )!;
+  const isImageEdited = isNewImage(newCabin);
 
+  const { imageFile, imageFileName, imagePath } =
+    getImageProps(newCabin, isImageEdited) || {};
   const cabinToAdd = {
     ...newCabin,
     // image: { ...newCabin.image["0"], name: imageFileName }, // does not work because newCabin.image["0"] is a File instance which has some properties that are not enumerable
-    image: imagePath,
+    image: isImageEdited ? imagePath : newCabin.image,
   };
 
   const { data, error } = await supabase
@@ -72,7 +75,7 @@ export async function CreateCabin(newCabin: FieldValues) {
     after re-render and repainting the page, image is not painted until the next render
     (or manul page reload)
   */
-  await uploadCabinImage(imageFileName, imageFile, data);
+  if (isImageEdited) await uploadCabinImage(imageFileName!, imageFile, data);
   return data;
 }
 
@@ -82,11 +85,7 @@ export async function editCabin(obj: {
   id: number;
   cabinToEdit: CabinType;
 }) {
-  const isImageEdited =
-    typeof obj.data.image !== "string" &&
-    obj.data?.image?.length > 0 &&
-    Object.keys(obj.data?.image).length > 0;
-
+  const isImageEdited = isNewImage(obj.data);
   const imageProps = getImageProps(obj.data, isImageEdited);
   const { imageFile, imageFileName, imagePath } = imageProps || {};
 
