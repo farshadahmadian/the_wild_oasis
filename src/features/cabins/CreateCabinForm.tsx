@@ -5,13 +5,11 @@ import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-import { CreateCabin, editCabin } from "../../services/apiCabins";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { QUERY_KEYS } from "../../types";
 import { formatCurrency } from "../../utils/helpers";
 import FormRow, { StyledFormRow } from "../../ui/FormRow";
 import { CabinType } from "./types";
+import useCreateCabin from "./hooks/useCreateCabin";
+import useEditCabin from "./hooks/useEditCabin";
 
 // type CabinFormType =
 //   | { [key in keyof Omit<CabinType, "id" | "createdAt">]: string }
@@ -37,66 +35,43 @@ function CreateCabinForm({ cabinToEdit }: CreateCabinFormPropsType) {
     getValues,
     formState: { errors },
   } = useForm({ defaultValues: cabinToEdit ? cabinToEdit : {} });
+  const { isCreating, mutateCreating } = useCreateCabin();
+  const { isEditing, mutateEditing } = useEditCabin();
 
   // useQuery() for getting the cached state (without fetching the data again)
   // const { data: cabins } = useQuery({
   //   queryKey: [QUERY_KEYS.CABINS],
   // });
-  const queryClient = useQueryClient();
-  const { mutate: mutateCreating, isPending: isCreating } = useMutation({
-    mutationFn: CreateCabin,
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CABINS],
-      });
-      toast.success("Cabin successfully created");
-      reset();
-    },
-
-    onError: () => {
-      toast.error("Cabin could not be created");
-    },
-  });
-
-  /* 
-    2 useMutation() for one form submission:
-    1 for creating a new cabin
-    1 for editing a cabin
-  */
-  const { mutate: mutateEditing, isPending: isEditing } = useMutation({
-    // the function value assigned to "mutationFn" receives only 1 parameter
-    mutationFn: (obj: {
-      data: FieldValues;
-      id: number;
-      cabinToEdit: CabinType;
-    }) => editCabin(obj),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CABINS],
-      });
-      toast.success("Cabin successfully edited");
-      // reset(); // resets to "default" values
-      reset({
-        name: "",
-        maxCapacity: 0,
-        description: "",
-        discount: 0,
-        regularPrice: 0,
-      });
-    },
-
-    onError: () => {
-      toast.error("Cabin could not be edited");
-    },
-  });
 
   const isCreatingOrEditing = isCreating || isEditing;
 
   function onSubmit(data: FieldValues) {
-    if (cabinToEdit) mutateEditing({ data, id: cabinToEdit.id, cabinToEdit });
-    else mutateCreating(data);
+    if (cabinToEdit)
+      // "mutateEditing" (mutate function) has access to "onSuccess"
+      mutateEditing(
+        { data, id: cabinToEdit.id, cabinToEdit },
+        {
+          /* 
+            onSuccess() has access to the "data" that is returned 
+            from the mutate function (editCabin() function in apiCabins.ts)
+          */
+          onSuccess: data => {
+            // console.log(data);
+            void data;
+            reset({
+              name: "",
+              maxCapacity: 0,
+              description: "",
+              discount: 0,
+              regularPrice: 0,
+            });
+          },
+        }
+      );
+    else
+      mutateCreating(data, {
+        onSuccess: () => reset(),
+      });
   }
 
   // console.log(errors);

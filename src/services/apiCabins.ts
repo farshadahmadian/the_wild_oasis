@@ -90,7 +90,7 @@ export async function editCabin(obj: {
   const imageProps = getImageProps(obj.data, isImageEdited);
   const { imageFile, imageFileName, imagePath } = imageProps || {};
 
-  const { data, error } = await supabase
+  const { data: editedCabin, error } = await supabase
     .from("cabins")
     .update({
       ...obj.data,
@@ -105,11 +105,15 @@ export async function editCabin(obj: {
     })
     .eq("id", obj.id)
     .select();
+  // .single(); // to return the editedCabin object instead of the array [editedCabin]
 
   if (error) {
     console.error(error);
     throw new Error("Cabin could not be edited");
   }
 
-  if (isImageEdited) await uploadCabinImage(imageFileName!, imageFile, data);
+  if (isImageEdited)
+    await uploadCabinImage(imageFileName!, imageFile, editedCabin);
+
+  return editedCabin;
 }

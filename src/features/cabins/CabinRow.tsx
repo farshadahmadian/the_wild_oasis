@@ -1,12 +1,9 @@
 import styled from "styled-components";
 import { CabinType } from "./types";
 import { formatCurrency } from "../../utils/helpers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import { QUERY_KEYS } from "../../types";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
+import useDeleteCabin from "./hooks/useDeleteCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -79,34 +76,11 @@ type CabinRowPropsType = {
 
 function CabinRow({ cabin }: CabinRowPropsType) {
   const [showEditForm, setShowEditForm] = useState(false);
+  const { isDeleting, mutateDeletingCabin } = useDeleteCabin();
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
-  const queryClient = useQueryClient();
-  const { isPending: isDeleting, mutate } = useMutation({
-    // mutationFn: (id: number) => deleteCabin(id),
-    mutationFn: deleteCabin,
-
-    // the callback function to be called if the delete query was successful
-    onSuccess: () => {
-      /*
-        react query will refetch the data when a data (queryKey) in cache is invalid.
-        without using invalidateQueries(), after clicking on the "delete" button,
-        react query will not refetch the data, until the browser tab changes.
-        invalidateQueries() makes react query to refetch the data without changing
-        the tab (the same as the "invalidate" button in react query extension does)
-      */
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CABINS],
-      });
-      toast.success("Cabin deleted successfully");
-    },
-    onError: error => {
-      toast.error(`Cabin could not be deleted!`);
-      console.error(error.message);
-    },
-  });
 
   function handleDeleteRow(id: number) {
-    mutate(id);
+    mutateDeletingCabin(id);
   }
 
   function handleEditRow() {
@@ -120,7 +94,11 @@ function CabinRow({ cabin }: CabinRowPropsType) {
         <Cabin>{name}</Cabin>
         <Capacity>{maxCapacity}</Capacity>
         <Price>{formatCurrency(regularPrice)}</Price>
-        <Discount>{formatCurrency(discount)}</Discount>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
         <div>
           <button onClick={handleEditRow}>Edit</button>
           <button
