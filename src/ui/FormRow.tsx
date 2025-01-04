@@ -76,7 +76,7 @@ const StyledError = styled.span`
 
 type ErrorPropsType = {
   // errors: { [key: string]: { message: string } };
-  errors: FieldErrors;
+  errors: FieldErrors | null;
   label: string;
 };
 
@@ -95,7 +95,7 @@ function Error({ errors, label }: ErrorPropsType) {
 
 type FormRowPropsType = {
   children: JSX.Element;
-  errors: FieldErrors;
+  errors: FieldErrors | null;
   label?: string;
 };
 
