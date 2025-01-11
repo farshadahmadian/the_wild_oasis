@@ -95,7 +95,7 @@ function Error({ errors, label }: ErrorPropsType) {
 
 type FormRowPropsType = {
   children: JSX.Element;
-  errors: FieldErrors | null;
+  errors: FieldErrors;
   label?: string;
 };
 
@@ -104,7 +104,7 @@ function FormRow({ children, errors, label = "" }: FormRowPropsType) {
     <StyledFormRow>
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
-      <Error errors={errors} label={children.props.id} />
+      <Error errors={errors} label={children.props.name} />
     </StyledFormRow>
   );
 }
