@@ -36,7 +36,8 @@ function useEditCabin() {
     },
 
     onError: () => {
-      toast.error("Cabin could not be edited");
+      // toast.error("Cabin could not be edited");
+      toast.error("Permission denied");
     },
   });
 

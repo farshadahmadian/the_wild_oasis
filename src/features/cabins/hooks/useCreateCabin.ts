@@ -17,7 +17,8 @@ function useCreateCabin() {
     },
 
     onError: () => {
-      toast.error("Cabin could not be created");
+      // toast.error("Cabin could not be created");
+      toast.error("Permission denied");
     },
   });
 

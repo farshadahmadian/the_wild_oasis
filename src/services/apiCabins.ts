@@ -111,6 +111,10 @@ export async function editCabin(obj: {
     throw new Error("Cabin could not be edited");
   }
 
+  if (!editedCabin.length) {
+    throw new Error("Cabin could not be edited");
+  }
+
   if (isImageEdited)
     await uploadCabinImage(imageFileName!, imageFile, editedCabin);
 
