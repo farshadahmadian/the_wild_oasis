@@ -25,9 +25,13 @@ import useEditCabin from "./hooks/useEditCabin";
 
 type CreateCabinFormPropsType = {
   cabinToEdit: CabinType | null;
+  onCloseModal?: () => void;
 };
 
-function CreateCabinForm({ cabinToEdit }: CreateCabinFormPropsType) {
+function CreateCabinForm({
+  cabinToEdit,
+  onCloseModal,
+}: CreateCabinFormPropsType) {
   const {
     register,
     handleSubmit,
@@ -65,12 +69,16 @@ function CreateCabinForm({ cabinToEdit }: CreateCabinFormPropsType) {
               discount: 0,
               regularPrice: 0,
             });
+            onCloseModal?.();
           },
         }
       );
     else
       mutateCreating(data, {
-        onSuccess: () => reset(),
+        onSuccess: () => {
+          reset();
+          onCloseModal?.();
+        },
       });
   }
 
@@ -98,7 +106,10 @@ function CreateCabinForm({ cabinToEdit }: CreateCabinFormPropsType) {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onValidationErrors)}>
+    <Form
+      $type={onCloseModal ? "modal" : "regular"}
+      onSubmit={handleSubmit(onSubmit, onValidationErrors)}
+    >
       <FormRow label="Cabin name" errors={errors}>
         <Input
           type="text"
@@ -190,7 +201,11 @@ function CreateCabinForm({ cabinToEdit }: CreateCabinFormPropsType) {
 
       <StyledFormRow>
         {/* type is an HTML attribute! */}
-        <Button $variation="secondary" type="reset">
+        <Button
+          $variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isCreatingOrEditing}>

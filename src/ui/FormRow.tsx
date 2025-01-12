@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const StyledFormRow = styled.div`
   display: grid;
   align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
+  grid-template-columns: 12rem 1fr 1.2fr;
   gap: 2.4rem;
 
   padding: 1.2rem 0;
@@ -27,11 +27,11 @@ export const StyledFormRow = styled.div`
     gap: 1.2rem;
   }
 
-  @media screen and (max-width: 1350px) {
+  /* @media screen and (max-width: 1350px) {
     grid-template-columns: 12rem 1fr;
     grid-template-rows: 1fr auto;
     row-gap: 1rem;
-  }
+  } */
 
   @media screen and (max-width: 980px) {
     grid-template-columns: 12rem 1fr 1.2fr;
@@ -58,10 +58,10 @@ const StyledError = styled.span`
   font-size: 1.4rem;
   color: var(--color-red-700);
 
-  @media screen and (max-width: 1350px) {
+  /* @media screen and (max-width: 1350px) {
     grid-column: 2;
     align-self: start;
-  }
+  } */
 
   @media screen and (max-width: 980px) {
     grid-column: 3;

@@ -21,10 +21,10 @@ const FileInput = styled.input.attrs({ type: "file" })`
     }
   }
 
-  @media screen and (max-width: 1350px) {
-    width: 100%;
-    max-width: 40rem;
-  }
+  /* @media screen and (max-width: 1350px) { */
+  width: 100%;
+  /* max-width: 40rem; */
+  /* } */
 `;
 
 export default FileInput;
